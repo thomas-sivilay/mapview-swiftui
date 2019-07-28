@@ -23,6 +23,7 @@ final class LandmarkAnnotation: NSObject, MKAnnotation {
 
 struct MapView: UIViewRepresentable {
     @Binding var landmarks: [Landmark]
+    @Binding var selectedLandmark: Landmark?
     
     func makeUIView(context: Context) -> MKMapView {
         MKMapView()
@@ -48,5 +49,8 @@ struct MapView: UIViewRepresentable {
         mapView.removeAnnotations(mapView.annotations)
         let newAnnotations = landmarks.map { LandmarkAnnotation(landmark: $0) }
         mapView.addAnnotations(newAnnotations)
+        if let selectedAnnotation = newAnnotations.filter({ $0.id == selectedLandmark?.id }).first {
+            mapView.selectAnnotation(selectedAnnotation, animated: true)
+        }
     }
 }

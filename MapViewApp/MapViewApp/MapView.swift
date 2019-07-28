@@ -10,6 +10,8 @@ import SwiftUI
 import MapKit
 
 struct MapView: UIViewRepresentable {
+    @Binding var landmarks: [Landmark]
+    
     func makeUIView(context: Context) -> MKMapView {
         MKMapView()
     }

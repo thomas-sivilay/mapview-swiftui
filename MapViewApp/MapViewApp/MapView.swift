@@ -32,6 +32,18 @@ struct MapView: UIViewRepresentable {
         updateAnnotations(from: uiView)
     }
     
+    func makeCoordinator() -> Coordinator {
+        Coordinator(self)
+    }
+    
+    final class Coordinator: NSObject, MKMapViewDelegate {
+        var control: MapView
+
+        init(_ control: MapView) {
+            self.control = control
+        }
+    }
+    
     private func updateAnnotations(from mapView: MKMapView) {
         mapView.removeAnnotations(mapView.annotations)
         let newAnnotations = landmarks.map { LandmarkAnnotation(landmark: $0) }

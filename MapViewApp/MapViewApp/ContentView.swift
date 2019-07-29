@@ -39,11 +39,12 @@ struct ContentView: View {
                     self.selectNextLandmark()
                 }) {
                     Text("Next")
-                    .padding()
-                    .background(Color.white)
-                    .cornerRadius(8)
-                    .shadow(radius: 8)
-                    .padding(.bottom)
+                        .foregroundColor(.black)
+                        .padding()
+                        .background(Color.white)
+                        .cornerRadius(8)
+                        .shadow(radius: 3)
+                        .padding(.bottom)
                 }
             }
         }

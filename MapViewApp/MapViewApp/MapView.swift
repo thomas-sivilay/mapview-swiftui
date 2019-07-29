@@ -11,12 +11,12 @@ import MapKit
 
 final class LandmarkAnnotation: NSObject, MKAnnotation {
     let id: String
-    let name: String
+    let title: String?
     let coordinate: CLLocationCoordinate2D
 
     init(landmark: Landmark) {
         self.id = landmark.id
-        self.name = landmark.name
+        self.title = landmark.name
         self.coordinate = landmark.location
     }
 }
@@ -26,7 +26,9 @@ struct MapView: UIViewRepresentable {
     @Binding var selectedLandmark: Landmark?
     
     func makeUIView(context: Context) -> MKMapView {
-        MKMapView()
+        let map = MKMapView()
+        map.delegate = context.coordinator
+        return map
     }
     
     func updateUIView(_ uiView: MKMapView, context: Context) {
@@ -42,6 +44,27 @@ struct MapView: UIViewRepresentable {
 
         init(_ control: MapView) {
             self.control = control
+        }
+        
+        func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
+            guard let coordinates = view.annotation?.coordinate else { return }
+            let span = mapView.region.span
+            let region = MKCoordinateRegion(center: coordinates, span: span)
+            mapView.setRegion(region, animated: true)
+        }
+        
+        func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
+            guard let annotation = annotation as? LandmarkAnnotation else { return nil }
+            let identifier = "Annotation"
+            var annotationView: MKMarkerAnnotationView? = mapView.dequeueReusableAnnotationView(withIdentifier: identifier) as? MKMarkerAnnotationView
+            if annotationView == nil {
+                annotationView = MKMarkerAnnotationView(annotation: annotation, reuseIdentifier: identifier)
+                annotationView?.canShowCallout = true
+                annotationView?.rightCalloutAccessoryView = UIButton(type: .detailDisclosure)
+            } else {
+                annotationView?.annotation = annotation
+            }
+            return annotationView
         }
     }
     
